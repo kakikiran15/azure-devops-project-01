@@ -34,3 +34,13 @@ steps:
         $(Build.BuildId)
         latest
 
+
+
+
+  - task: AzureWebAppContainer@1
+    displayName: 'Deploy container to Azure App Service'
+    inputs:
+      azureSubscription: 'azure-rm-connection'
+      appName: 'kiran-devops-app'
+      containers: 'kiranacr011.azurecr.io/azure-devops-app:$(Build.BuildId)'
+
