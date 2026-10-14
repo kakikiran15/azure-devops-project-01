@@ -5,6 +5,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  imageName: 'azure-devops-app'
+
 steps:
   - task: UsePythonVersion@0
     inputs:
@@ -20,6 +23,14 @@ steps:
       python -m unittest discover -s tests -v
     displayName: 'Run unit tests'
 
-  - script: |
-      docker build -t azure-devops-app:$(Build.BuildId) .
-    displayName: 'Build Docker image'
+  - task: Docker@2
+    displayName: 'Build and push Docker image to ACR'
+    inputs:
+      command: 'buildAndPush'
+      containerRegistry: 'acr-connection'
+      repository: '$(imageName)'
+      Dockerfile: 'Dockerfile'
+      tags: |
+        $(Build.BuildId)
+        latest
+
